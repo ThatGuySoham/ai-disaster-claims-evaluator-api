@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.2",
   "info": {
-    "title": "Bajaj Finserv Claim Processor",
+    "title": "AI Disaster Claim Processor",
     "description": "API for automated insurance claim validation",
     "version": "1.0"
   },
@@ -132,3 +132,4 @@
     }
   }
 }
+
