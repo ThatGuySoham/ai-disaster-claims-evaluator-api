@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("claim-evaluator")
 
 app = FastAPI(
-    title="Bajaj Finserv Claim Processor",
+    title="AI Disaster Claim Processor",
     description="API for automated insurance claim validation",
     version="1.0"
 )
@@ -95,3 +95,4 @@ async def analyze_claim(claim: Claim):
     except Exception as e:
         logger.exception("Claim analysis failed")
         raise HTTPException(status_code=500, detail=f"Claim analysis failed: {str(e)}")
+
