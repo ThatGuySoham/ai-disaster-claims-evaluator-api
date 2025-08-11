@@ -8,64 +8,126 @@
   "paths": {
     "/upload-policy/": {
       "post": {
-        "summary": "Upload an insurance policy",
-        "description": "Uploads and processes PDF/DOCX policy documents.",
+        "summary": "Upload policy document",
+        "description": "Uploads and processes PDF/DOC/DOCX policy documents. Extracts text chunks, stores them, and returns a policy ID.",
         "requestBody": {
+          "required": true,
           "content": {
-            "application/pdf": {},
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {}
-          },
-          "required": true
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Policy document to upload (PDF/DOC/DOCX)"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
         },
         "responses": {
           "200": {
-            "description": "Policy processed successfully"
+            "description": "Policy processed successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UploadResponse" },
+                "examples": {
+                  "success": {
+                    "summary": "Example success",
+                    "value": {
+                      "message": "Policy processed successfully",
+                      "chunks_processed": 15,
+                      "policy_id": "abc1234-5678"
+                    }
+                  }
+                }
+              }
+            }
           },
-          "400": {
-            "description": "Invalid file type"
-          },
-          "413": {
-            "description": "File too large"
-          },
-          "422": {
-            "description": "No text extracted"
-          },
-          "500": {
-            "description": "Processing failed"
-          }
+          "400": { "description": "Invalid file type" },
+          "413": { "description": "File too large" },
+          "422": { "description": "No text extracted" },
+          "500": { "description": "Processing failed" }
         }
       }
     },
     "/process-claim/": {
       "post": {
-        "summary": "Process an insurance claim",
-        "description": "Validates and processes claim text for approval.",
+        "summary": "Evaluate a claim text",
+        "description": "Analyzes claim text using AI to produce a verdict, confidence score, and approval flag.",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "text": {
-                    "type": "string",
-                    "minLength": 10,
-                    "maxLength": 1000
+              "schema": { "$ref": "#/components/schemas/Claim" },
+              "examples": {
+                "example1": {
+                  "summary": "Valid claim text",
+                  "value": {
+                    "text": "Flood damaged my warehouse inventory worth INR 5 lakhs."
                   }
-                },
-                "required": ["text"]
+                }
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
-            "description": "Claim processed successfully"
+            "description": "Claim processed successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ClaimResponse" },
+                "examples": {
+                  "success": {
+                    "summary": "Claim approved",
+                    "value": {
+                      "result": "Claim approved with moderate confidence",
+                      "confidence_score": 0.85,
+                      "is_approved": true
+                    }
+                  }
+                }
+              }
+            }
           },
-          "500": {
-            "description": "Claim analysis failed"
-          }
+          "500": { "description": "Claim analysis failed" }
         }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UploadResponse": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "chunks_processed": { "type": "integer" },
+          "policy_id": { "type": "string" }
+        },
+        "required": ["message", "chunks_processed"]
+      },
+      "Claim": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 1000
+          }
+        },
+        "required": ["text"]
+      },
+      "ClaimResponse": {
+        "type": "object",
+        "properties": {
+          "result": { "type": "string" },
+          "confidence_score": { "type": "number", "format": "float" },
+          "is_approved": { "type": "boolean" }
+        },
+        "required": ["result"]
       }
     }
   }
