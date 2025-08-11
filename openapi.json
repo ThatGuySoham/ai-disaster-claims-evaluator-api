@@ -1,0 +1,72 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Bajaj Finserv Claim Processor",
+    "description": "API for automated insurance claim validation",
+    "version": "1.0"
+  },
+  "paths": {
+    "/upload-policy/": {
+      "post": {
+        "summary": "Upload an insurance policy",
+        "description": "Uploads and processes PDF/DOCX policy documents.",
+        "requestBody": {
+          "content": {
+            "application/pdf": {},
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {}
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Policy processed successfully"
+          },
+          "400": {
+            "description": "Invalid file type"
+          },
+          "413": {
+            "description": "File too large"
+          },
+          "422": {
+            "description": "No text extracted"
+          },
+          "500": {
+            "description": "Processing failed"
+          }
+        }
+      }
+    },
+    "/process-claim/": {
+      "post": {
+        "summary": "Process an insurance claim",
+        "description": "Validates and processes claim text for approval.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 1000
+                  }
+                },
+                "required": ["text"]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Claim processed successfully"
+          },
+          "500": {
+            "description": "Claim analysis failed"
+          }
+        }
+      }
+    }
+  }
+}
