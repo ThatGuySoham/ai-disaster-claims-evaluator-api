@@ -1,8 +1,13 @@
+import uuid
+
 def store_chunks(chunks):
     """
-    Minimal local store: append chunks to a local file so the app doesn't error.
-    Replace with your real vector DB storage (FAISS, Pinecone, etc.).
+    Pretend to store chunks into a database or vector store.
+    Returns a random UUID as the policy ID.
     """
-    with open("chunks_store.txt", "a", encoding="utf-8") as f:
-        for i, c in enumerate(chunks):
-            f.write(f"--- chunk {i} ---\n{c}\n")
+    # Just write chunks to a local text file (for demonstration)
+    with open("stored_chunks.txt", "a", encoding="utf-8") as f:
+        for chunk in chunks:
+            f.write(chunk + "\n---\n")
+    return str(uuid.uuid4())
+
